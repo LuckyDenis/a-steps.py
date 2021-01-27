@@ -1,0 +1,15 @@
+name: app-configuration
+base: &base
+  server:
+      host: 0.0.0.0
+      port: 4242
+
+develop:
+  <<: *base
+
+testing:
+  <<: *base
+
+production:
+  <<: *base
+
