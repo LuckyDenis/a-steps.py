@@ -13,20 +13,20 @@ jobs:
         python-version: [3.8]
     steps:
       - uses: actions/checkout@2
-      - name: Настройка Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
-      - name: Установка зависимостей
+      - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-      - name: Запуск pylint
+      - name: Checking pylint
       run: |
       pylint ./app/ ./tests/
 
-      - name: Запуск py.test
+      - name: Checking pytest
       run: |
         pytest
