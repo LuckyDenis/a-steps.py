@@ -6,6 +6,6 @@
 
 def test__foo():
     """
-    Проверка pipeline
+    Проверка pipeline.
     """
     assert True is not False
