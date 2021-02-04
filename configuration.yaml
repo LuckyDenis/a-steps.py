@@ -4,6 +4,21 @@ base: &base
       host: 0.0.0.0
       port: 4242
 
+  database:
+    drivername: postgresql+asyncpg
+    host: 0.0.0.0
+    port: 5432
+    username: postgres
+    password: qwer12345
+    database: asteps_db
+    echo: false
+    pool_min_size: 1
+    pool_max_size: 10
+    ssl: false
+    retry_limit: 32
+    retry_interval: 1
+
+
 develop:
   <<: *base
 

@@ -2,13 +2,19 @@ name: CI
 on:
   pull_request:
     branches:
-      - master
+      - master, dev
   push:
     branches:
-      - master
+      - master, dev
 jobs:
   build:
     runs-on: ubuntu-20.04
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
 
     env:
       CONFIG_PATH: ../../configuration.yaml
