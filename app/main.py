@@ -6,44 +6,50 @@
 
 from aiohttp import web
 
-from app.configuration import ConfigReader
 from gino.ext.aiohttp import Gino
 from sqlalchemy.engine.url import URL
+from app.configuration import ConfigReader
 
 
-def db_make_setup(config):
-    db_config = config.data['database']
+def setup_database(database_variables, database, app):
     dsn = URL(
-        drivername=db_config['drivername'],
-        username=db_config['username'],
-        password=db_config['password'],
-        host=db_config['host'],
-        port=db_config['port'],
-        database=db_config['database']
+        drivername=database_variables['DATABASE_DRIVERNAME'],
+        username=database_variables['DATABASE_USERNAME'],
+        password=database_variables['DATABASE_PASSWORD'],
+        host=database_variables['DATABASE_HOST'],
+        port=database_variables['DATABASE_PORT'],
+        database=database_variables['DATABASE_NAME']
     )
-    return {
-        'dsn': dsn,
-        **db_config
-    }
+    database.init_app(
+        app=app,
+        config={
+            'dsn': dsn,
+            'drivername': database_variables['DATABASE_DRIVERNAME'],
+            'echo': database_variables['DATABASE_ECHO'],
+            'pool_min_size': database_variables['DATABASE_POOL_MIN_SIZE'],
+            'pool_max_size': database_variables['DATABASE_POOL_MAX_SIZE'],
+            'ssl': database_variables['DATABASE_SSL'],
+            'retry_limit': database_variables['DATABASE_RETRY_LIMIT'],
+            'retry_interval': database_variables['DATABASE_RETRY_INTERVAL']
+        }
+    )
 
 
 def main():
-    """
-    Точка доступа
-    :return: None
-    """
-    config = ConfigReader()
-    db = Gino()
-    app = web.Application(middlewares=[db])
-    db.init_app(
-        app=app,
-        config=db_make_setup(config)
-    )
+    config_reader = ConfigReader()
+    config_reader.read()
 
+    database = Gino()
+    app = web.Application(middlewares=[database])
+
+    setup_database(
+        config_reader.database_variables(), database, app)
+
+    server_variables = config_reader.server_variables()
     web.run_app(
         app=app,
-        host=config.data["server"]["host"],
-        port=config.data["server"]["port"]
+        host=server_variables["SERVER_HOST"],
+        port=server_variables["SERVER_PORT"]
     )
 
 

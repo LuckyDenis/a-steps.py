@@ -1,71 +1,68 @@
 # coding: utf-8
 """
-Читатель для конфигурационного файла.
+Читатль конфигурационного файла.
 """
+from typing import AnyStr, NoReturn, Dict, List
 
 import os
-
 import yaml
 
-from app.configuration.exception import FileTypeError
-from app.configuration.exception import ValueVariableEnvError
-from app.configuration.exception import VariableEnvNotFoundError
 
-
-class ConfigReader:  # pylint: disable=too-few-public-methods
+class ConfigReader:
     """
-    Отвечает за получение и проверку данных из файла с конфигурациями.
+    Отвечает за получение данных из файла с конфигурациями.
 
     Тип конфигурационного файла должен быть YAML.
-    Прочитанные данные хранятся в `ConfigReader("$CONFIG_PATH").data`
-    в формате `dict`.
     """
 
     def __init__(self):
-        config_path = os.environ.get("CONFIG_PATH")
-        environment = os.environ.get("ENVIRONMENT")
-
-        self._is_config_path(config_path, environment)
-        self._is_environment(config_path, environment)
-        self._config_file_is_yaml(config_path, environment)
-        self._is_environment(config_path, environment)
-
-        with open(config_path, 'r') as stream_file:
-            file = yaml.SafeLoader(stream_file)
-        self.data = file.get_data()[environment.lower()]
+        self.config_path: AnyStr = ""
+        self.environment: AnyStr = ""
+        self.data: Dict = dict()
+        self.database: Dict = dict()
+        self.server: Dict = dict()
 
     @staticmethod
-    def _is_config_path(config_path, environment):
-        if not config_path:
-            raise VariableEnvNotFoundError(
-                f"Не указан путь до конфигурационного файла`\n"
-                f"\tCONFIG_PATH: {config_path}"
-                f"\tENVIRONMENT: {environment}")
+    def _get_environ(environ_name: AnyStr) -> AnyStr:
+        return os.environ.get(environ_name)
 
-    @staticmethod
-    def _is_environment(config_path, environment):
-        if not environment:
-            raise VariableEnvNotFoundError(
-                f"Не задан тип рабочего окружения: develop, testing, production\n"
-                f"\tCONFIG_PATH: {config_path}"
-                f"\tENVIRONMENT: {environment}"
-            )
+    def read(self) -> NoReturn:
+        self.config_path = self._get_environ("CONFIG_PATH")
+        self.environment = self._get_environ("ENVIRONMENT")
 
-    @staticmethod
-    def _config_file_is_yaml(config_path, environment):
-        _, extension = os.path.splitext(config_path)
-        if extension not in ('.yaml', 'yml'):
-            raise FileTypeError(
-                f"Конфигурационный файл должен быть типа YAML\n "
-                f"\tCONFIG_PATH: {config_path}"
-                f"\tCONFIG_TYPE: {extension}"
-                f"\tENVIRONMENT: {environment}")
+        with open(self.config_path, 'r') as stream_file:
+            file = yaml.SafeLoader(stream_file).get_data()
+        self.data.update(file[self.environment.lower()])
 
-    @staticmethod
-    def _environment_is_correct(config_path, environment):
-        if environment not in ("develop", "testing", "production"):
-            raise ValueVariableEnvError(
-                f"Не верный тип рабочего окружения: develop, testing, production\n"
-                f"\tCONFIG_PATH: {config_path}"
-                f"\tENVIRONMENT: {environment}"
-            )
+    def _get_section_variables(
+            self, section_name: AnyStr, variables_name:
+            List[AnyStr], store: Dict[AnyStr, AnyStr]) -> NoReturn:
+
+        for variable_name in variables_name:
+            store[variable_name] = self._get_environ(variable_name)
+
+        store.update(self.data[section_name])
+
+    def server_variables(self) -> Dict[AnyStr, AnyStr]:
+        section_name = 'server'
+        variables_name = ['SERVER_PORT']
+
+        if not self.server:
+            self._get_section_variables(
+                section_name, variables_name, self.server)
+        return self.server
+
+    def database_variables(self) -> Dict[AnyStr, AnyStr]:
+        section_name = 'database'
+        variables_name = [
+            'DATABASE_PASSWORD',
+            'DATABASE_USERNAME',
+            'DATABASE_PORT',
+            'DATABASE_HOST',
+            'DATABASE_NAME'
+        ]
+
+        if not self.database:
+            self._get_section_variables(
+                section_name, variables_name, self.database)
+        return self.database
