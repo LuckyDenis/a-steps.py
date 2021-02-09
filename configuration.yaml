@@ -1,22 +1,16 @@
 name: app-configuration
 base: &base
   server:
-      host: 0.0.0.0
-      port: 4242
+      SERVER_HOST: 0.0.0.0
 
   database:
-    drivername: postgresql+asyncpg
-    host: 0.0.0.0
-    port: 5432
-    username: postgres
-    password: postgres
-    database: asteps_db
-    echo: false
-    pool_min_size: 1
-    pool_max_size: 10
-    ssl: false
-    retry_limit: 32
-    retry_interval: 1
+    DATABASE_DRIVERNAME: postgresql+asyncpg
+    DATABASE_ECHO: false
+    DATABASE_POOL_MIN_SIZE: 1
+    DATABASE_POOL_MAX_SIZE: 10
+    DATABASE_SSL: false
+    DATABASE_RETRY_LIMIT: 32
+    DATABASE_RETRY_INTERVAL: 1
 
 
 develop:

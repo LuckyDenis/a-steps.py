@@ -2,23 +2,36 @@ name: CI
 on:
   pull_request:
     branches:
-      - master, dev
+      - master
+      - dev
   push:
     branches:
-      - master, dev
+      - master
+      - dev
 jobs:
   build:
     runs-on: ubuntu-20.04
 
     services:
       postgres:
-        image: postgres
+        image: postgres:11
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     env:
       CONFIG_PATH: ../../configuration.yaml
       ENVIRONMENT: testing
+      SERVER_PORT: 8080
+      DATABASE_PASSWORD: postgres
+      DATABASE_USERNAME: postgres
+      DATABASE_PORT: 5432
+      DATABASE_HOST: 0.0.0.0
+      DATABASE_NAME: db_test
 
     strategy:
       matrix:
@@ -35,9 +48,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Checking pylint
+      - name: Checking flake8
         run: |
-          pylint ./app/ ./tests/
+          flake8 ./app/ ./tests/
 
       - name: Checking pytest
         run: |
