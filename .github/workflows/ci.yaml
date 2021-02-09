@@ -48,9 +48,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Checking pylint
+      - name: Checking flake8
         run: |
-          pylint ./app/ ./tests/
+          flake8 ./app/ ./tests/
 
       - name: Checking pytest
         run: |
