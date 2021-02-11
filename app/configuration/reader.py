@@ -21,6 +21,7 @@ class ConfigReader:
         self.data: Dict = dict()
         self.database: Dict = dict()
         self.server: Dict = dict()
+        self.jinja2: Dict = dict()
 
     @staticmethod
     def _get_environ(environ_name: AnyStr) -> AnyStr:
@@ -66,3 +67,12 @@ class ConfigReader:
             self._get_section_variables(
                 section_name, variables_name, self.database)
         return self.database
+
+    def jinja2_variables(self) -> Dict[AnyStr, AnyStr]:
+        section_name = 'jinja2'
+        variables_name = []
+
+        if not self.jinja2:
+            self._get_section_variables(
+                section_name, variables_name, self.jinja2)
+        return self.jinja2

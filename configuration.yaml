@@ -12,6 +12,11 @@ base: &base
     DATABASE_RETRY_LIMIT: 32
     DATABASE_RETRY_INTERVAL: 1
 
+  jinja2:
+    JINJA2_PACKAGE_NAME: app
+    JINJA2_PACKAGE_PATH: templates
+    JINJA2_ENCODING: utf-8
+
 
 develop:
   <<: *base
