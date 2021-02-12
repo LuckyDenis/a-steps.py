@@ -1,8 +1,12 @@
 # coding: utf8
 from sqlalchemy.engine.url import URL
+from app.typehints import Gino, Application
+from typing import NoReturn, Dict, AnyStr
 
 
-def setup_database(database_variables, database, app):
+def setup_database(
+        database_variables: Dict[AnyStr, AnyStr],
+        database: Gino, app: Application) -> NoReturn:
     dsn = URL(
         drivername=database_variables['DATABASE_DRIVERNAME'],
         username=database_variables['DATABASE_USERNAME'],
@@ -11,6 +15,7 @@ def setup_database(database_variables, database, app):
         port=database_variables['DATABASE_PORT'],
         database=database_variables['DATABASE_NAME']
     )
+
     database.init_app(
         app=app,
         config={

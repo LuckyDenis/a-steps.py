@@ -1,7 +1,11 @@
 # coding: utf8
 from aiohttp import web
-from gino import GinoEngine
 import aiohttp_jinja2
+from app.typehints import GinoEngine
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 @aiohttp_jinja2.template('index.html')
