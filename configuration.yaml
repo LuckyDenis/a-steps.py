@@ -1,7 +1,9 @@
 name: app-configuration
 base: &base
+  version: 1.0.0
+
   server:
-      SERVER_HOST: 0.0.0.0
+    SERVER_HOST: 0.0.0.0
 
   database:
     DATABASE_DRIVERNAME: postgresql+asyncpg
@@ -17,6 +19,33 @@ base: &base
     JINJA2_PACKAGE_PATH: templates
     JINJA2_ENCODING: utf-8
 
+  logging:
+    version: 1
+    disable_existing_loggers: true
+    formatters:
+      standard:
+        format: "[%(asctime)20s][PID %(process)d:%(threadName)s][%(name)s][%(levelname)s][MESSAGE]: %(message)s"
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: standard
+        stream: ext://sys.stdout
+
+    root:
+      level: NOTSET
+      handlers: [ console ]
+      propogate: yes
+
+    loggers:
+      app:
+        level: INFO
+        propogate: no
+
+      algorithms.views:
+        level: INFO
+        propagate: no
 
 develop:
   <<: *base

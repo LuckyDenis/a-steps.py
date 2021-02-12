@@ -25,6 +25,7 @@ pycodestyle==2.6.0
 pyflakes==2.2.0
 pyparsing==2.4.7
 pytest==6.2.2
+pytest-flake8==1.0.7
 python-dateutil==2.8.1
 python-editor==1.0.4
 PyYAML==5.4.1
