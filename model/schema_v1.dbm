@@ -19,7 +19,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" layer="0" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<table name="authors" layer="0" gen-alter-cmds="true" collapse-mode="2" max-obj-count="8">
+<table name="authors" layer="0" gen-alter-cmds="true" collapse-mode="2" max-obj-count="7">
 	<schema name="public"/>
 	<role name="holder"/>
 	<position x="80" y="40"/>
@@ -35,10 +35,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="email" not-null="true">
 		<type name="varchar" length="254"/>
 	</column>
-	<column name="display_email_status" not-null="true" default-value="true">
-		<type name="bool" length="0"/>
-	</column>
-	<column name="registred_date" not-null="true">
+	<column name="registered_date" not-null="true">
 		<type name="date" length="0"/>
 	</column>
 	<column name="visited_date" not-null="true">
@@ -46,10 +43,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 <constraint name="author_pk" type="pk-constr" table="public.authors">
 	<columns names="author_id" ref-type="src-columns"/>
-</constraint>
-
-<constraint name="email_ch" type="ck-constr" table="public.authors">
-	<expression><![CDATA[email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$']]></expression>
 </constraint>
 
 </table>
@@ -68,7 +61,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		</idxelement>
 </index>
 
-<table name="algorithms" layer="0" collapse-mode="2" max-obj-count="10">
+<table name="algorithms" layer="0" collapse-mode="2" max-obj-count="9">
 	<schema name="public"/>
 	<role name="holder"/>
 	<position x="560" y="40"/>
@@ -88,15 +81,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="modify_date">
 		<type name="date" length="0"/>
 	</column>
-	<column name="display_publication_state" not-null="true" default-value="false">
+	<column name="publication_state" not-null="true" default-value="false">
 		<type name="bool" length="0"/>
 	</column>
-	<column name="categorie" not-null="true" default-value="1">
+	<column name="category" not-null="true" default-value="1">
 		<type name="smallint" length="0"/>
-	</column>
-	<column name="algorithm_id_cp" not-null="true"
-	 identity-type="ALWAYS">
-		<type name="integer" length="0"/>
 	</column>
 	<column name="author" not-null="true">
 		<type name="uuid" length="0"/>
@@ -110,11 +99,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="public"/>
 	<role name="holder"/>
 	<position x="580" y="380"/>
-	<column name="categorie_id" not-null="true">
+	<column name="category_id" not-null="true">
 		<type name="smallint" length="0"/>
 	</column>
-<constraint name="categories_pk" type="pk-constr" table="public.categories">
-	<columns names="categorie_id" ref-type="src-columns"/>
+<constraint name="category_id_pk" type="pk-constr" table="public.categories">
+	<columns names="category_id" ref-type="src-columns"/>
 </constraint>
 
 </table>
@@ -128,13 +117,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </index>
 
 <constraint name="categorie_fk" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="CASCADE" del-action="SET DEFAULT" ref-table="public.categories" table="public.algorithms">
-	<columns names="categorie" ref-type="src-columns"/>
-	<columns names="categorie_id" ref-type="dst-columns"/>
+	 upd-action="CASCADE" del-action="RESTRICT" ref-table="public.categories" table="public.algorithms">
+	<columns names="category" ref-type="src-columns"/>
+	<columns names="category_id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="author_fk" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="CASCADE" del-action="NO ACTION" ref-table="public.authors"
+	 upd-action="CASCADE" del-action="RESTRICT" ref-table="public.authors"
 	deferrable="true" defer-type="INITIALLY IMMEDIATE"
  table="public.algorithms">
 	<columns names="author" ref-type="src-columns"/>
