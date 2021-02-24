@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="database-version">
+    <h4>DATABASE INFO</h4>
     {% if database_statuses %}
-        <span>DATABASE INFO: {{ database_statuses }}</span>
+        <p>{{ database_statuses }}</p>
     {% else %}
-        <span>DATABASE INFO: Нет данных</span>
+        <p>Information not found</p>
     {% endif %}
-    </div>
 {% endblock %}
-

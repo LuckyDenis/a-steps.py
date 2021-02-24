@@ -1,7 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ff69b4">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <link rel="icon" type="iamge/svg" href="/static/favicon.svg">
+
     {% if title %}
         <title>{{ title }}</title>
     {% else %}
@@ -9,6 +15,30 @@
     {% endif %}
 </head>
 <body>
-    {% block content %}{% endblock %}
+    <aside id="side-nav-open">
+        <nav>
+            <h4>
+                Menu
+            </h4>
+            <a href="#">Algorithms</a>
+            <a href="#">FeedBack</a>
+        </nav>
+        <a href="#" id="side-nav-close" title="Close Menu" aria-label="Close Menu" onclick="window.history.back()"></a>
+    </aside>
+    <main>
+        <header>
+            <a href="#side-nav-open" id="side-nav-button" class="hamburger" title="Open Menu">
+                <svg viewBox="0 0 50 40" role="presentation" focusable="false" aria-label="trigram for heaven symbol">
+                    <line x1="0" x2="100%" y1="10%" y2="10%"></line>
+                    <line x1="0" x2="1005" y1="50%" y2="50%"></line>
+                    <line x1="0" x2="100%" y1="90%" y2="90%"></line>
+                </svg>
+            </a>
+            <h1>A-Steps</h1>
+        </header>
+        <article>
+            {% block content %}{% endblock %}
+        </article>
+    </main>
 </body>
 </html>
